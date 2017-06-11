@@ -1,0 +1,5 @@
+vagrant/.vagrant
+vagrant/playbook.retry
+vagrant/.env
+jobstreamer/*
+!jobstreamer/.gitkeep

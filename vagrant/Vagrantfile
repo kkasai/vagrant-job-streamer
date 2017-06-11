@@ -1,0 +1,32 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+Dotenv.load
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/centos-7.3"
+
+  config.vm.network "forwarded_port", guest: 3000, host: 3000
+  config.vm.network "forwarded_port", guest: 45102, host: 45102
+
+  config.vm.synced_folder "../jobstreamer", "/root/workspace/jobstreamer"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "2048"
+  end
+
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "playbook.yml"
+    ansible.verbose = "-vvv"
+    ansible.extra_vars = {
+      git_user_name: ENV['GIT_USER_NAME'],
+      git_user_email: ENV['GIT_USER_EMAIL'],
+      datomic_version: ENV['DATOMIC_VERSION'],
+      workspace_directory: ENV['WORKSPACE_DIRECTORY'],
+      forked_agent_git_repository: ENV['FORKED_AGENT_GIT_REPOSITORY'],
+      forked_console_git_repository: ENV['FORKED_CONSOLE_GIT_REPOSITORY'],
+      forked_control_bus_git_repository: ENV['FORKED_CONTROL_BUS_GIT_REPOSITORY'],
+      forked_notificator_git_repository: ENV['FORKED_NOTIFICATOR_GIT_REPOSITORY']
+    }
+    ansible.inventory_path = "inventory"
+    end
+end

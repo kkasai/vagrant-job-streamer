@@ -1,0 +1,80 @@
+---
+- name: make job streamer directory
+  file:
+    path: "{{ workspace_directory }}"
+    state: directory
+    recurse: yes
+
+- name: install datomic
+  unarchive:
+    src: "https://my.datomic.com/downloads/free/{{ datomic_version }}"
+    dest: "{{ workspace_directory }}"
+    remote_src: yes
+
+- name: clone job streamer agent
+  git:
+    repo: "{{ forked_agent_git_repository }}"
+    dest: "{{ workspace_directory }}/job-streamer-agent"
+
+- name: check remote repository of agent
+  command: git remote -v
+  args:
+      chdir: "{{ workspace_directory }}/job-streamer-agent"
+  register: check_agent_upstream_repository
+
+- name: add upstream repository of agent
+  command: git remote add upstream https://github.com/job-streamer/job-streamer-agent.git
+  args:
+    chdir: "{{ workspace_directory }}/job-streamer-agent"
+  when: check_agent_upstream_repository.stdout.find('upsteam') == -1
+
+- name: clone job streamer console
+  git:
+    repo: "{{ forked_console_git_repository }}"
+    dest: "{{ workspace_directory }}/job-streamer-console"
+
+- name: check remote repository of consle
+  command: git remote -v
+  args:
+      chdir: "{{ workspace_directory }}/job-streamer-console"
+  register: check_console_upstream_repository
+
+- name: add upstream repository of console
+  command: git remote add upstream https://github.com/job-streamer/job-streamer-console.git
+  args:
+    chdir: "{{ workspace_directory }}/job-streamer-console"
+  when: check_console_upstream_repository.stdout.find('upsteam') == -1
+
+- name: clone job steramer control bus
+  git:
+    repo: "{{ forked_control_bus_git_repository }}"
+    dest: "{{ workspace_directory }}/job-streamer-control-bus"
+
+- name: check remote repository of control bus
+  command: git remote -v
+  args:
+      chdir: "{{ workspace_directory }}/job-streamer-console"
+  register: check_control_bus_upstream_repository
+
+- name: add upstream repository of control bus
+  command: git remote add upstream https://github.com/job-streamer/job-streamer-control-bus.git
+  args:
+    chdir: "{{ workspace_directory }}/job-streamer-control-bus"
+  when: check_control_bus_upstream_repository.stdout.find('upsteam') == -1
+
+- name: clone job steramer notificator
+  git:
+    repo: "{{ forked_notificator_git_repository }}"
+    dest: "{{ workspace_directory }}/job-streamer-notificator"
+
+- name: check remote repository of notificator
+  command: git remote -v
+  args:
+      chdir: "{{ workspace_directory }}/job-streamer-notificator"
+  register: check_notificator_upstream_repository
+
+- name: add upstream repository of notificator
+  command: git remote add upstream https://github.com/job-streamer/job-streamer-notificator.git
+  args:
+    chdir: "{{ workspace_directory }}/job-streamer-notificator"
+  when: check_notificator_upstream_repository.stdout.find('upsteam') == -1

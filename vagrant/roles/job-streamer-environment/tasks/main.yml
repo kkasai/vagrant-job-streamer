@@ -1,0 +1,40 @@
+---
+- name: install git
+  yum:
+    name: git
+
+- name: setting git
+  git_config:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { name: 'user.name', value: "{{ git_user_name }}" }
+    - { name: 'user.email', value: "{{ git_user_email }}" }
+
+- name: install java8
+  yum:
+    name: java-1.8.0-devel
+
+- name: install meven
+  yum:
+    name: maven
+
+- name: install leiningen
+  get_url:
+    url: https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+    dest: /usr/local/bin
+    mode: 0755
+
+- name: setting excution lein by root user
+  lineinfile:
+    path: /etc/profile
+    line: 'export LEIN_ROOT=true'
+
+- name: install unzip
+  yum:
+    name: unzip
+
+- name: install tmux
+  yum:
+    name: tmux
+
